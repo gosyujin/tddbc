@@ -34,19 +34,6 @@ describe Vending do
     end
   end
 
-  describe "合計" do
-    it "合計金額がわかる" do
-      vending = Vending.new
-      vending.show.should be == 0
-      vending.enter([5, 5, 5])
-      vending.show.should be == 0
-      vending.enter([10, 5, 5, 5])
-      vending.show.should be == 10
-      vending.enter([10, 5, 100])
-      vending.show.should be == 120
-    end
-  end
-
   describe "払い戻し" do
     it "合計金額が戻ってくる" do
       vending = Vending.new
@@ -54,28 +41,6 @@ describe Vending do
       vending.enter([10, 5, 100])
       vending.cancel.should be == 120
       vending.show.should be == 0
-    end
-  end
-
-  
-  describe "お金を入れると" do
-    it "購入できるジュースのリストが返る" do
-      vending = Vending.new
-      vending.enter([10, 5, 5, 5])
-      vending.juice_menu.should be == []
-      # お金が足りない時のテスト書こう
-      vending.enter([10, 5, 100])
-      vending.juice_menu.should be == [[120, "Cola"]]
-      # かう
-      vending.buy.should be == [[120, "Cola"], 0]
-      vending.show.should be == 0 
-    end
-
-    it "おつりあり" do
-      vending = Vending.new
-      vending.enter([50, 100])
-      vending.buy.should be == [[120, "Cola"], 30]
-      vending.show.should be == 0 
     end
   end
 
