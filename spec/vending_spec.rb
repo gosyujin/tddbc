@@ -56,34 +56,32 @@ describe Vending do
       its(:show) { should == 0 }
       its(:stock) { should == [120, "Cola", 5] }
       its(:cancel) { should == 0 }
-    end
-
-    describe "投入金額増えるかな" do
-      context "だめな硬貨だけのとき" do
-        let(:input) { [1,5,2000] }
-	it { @change.should == [1,5,2000] }
-	its(:show) { should == 0 }
-      end
-      context "受け入れる硬貨があるとき" do
-        let(:input) { [1000] }
-	it { @change.should == [] }
-	its(:show) { should == 1000 }
-      end
-    end
-
-    context "投入金額が0のとき" do
-      let(:input) { [] }
       its(:juice_menu) { should be == [] }
+    end
+
+    context "だめな硬貨だけのとき" do
+      let(:input) { [1,5,2000] }
+      it { @change.should == [1,5,2000] }
+      its(:show) { should == 0 }
+    end
+
+    context "1000円札を入れたとき" do
+      let(:input) { [1000] }
+      it { @change.should == [] }
+      its(:show) { should == 1000 }
     end
 
     context "投入金額が120より少ない時" do
       let(:input) { [10] }
       its(:juice_menu) { should be == [] }
+      its(:cancel) { should be == 10 }
     end
 
     context "投入金額が120" do
       let(:input) { [10, 10, 100] }
       its(:juice_menu) { should be == [[120, "Cola"]] }
+      its(:buy) { should be == [[120, "Cola"], 0]}
+      its(:cancel) { should be == 120 }
     end
 
     context "投入金額が120より多い" do
@@ -95,6 +93,10 @@ describe Vending do
       let(:input) { [10, 100] }
       its(:cancel) { should be == 110 }
     end
+    
+    context '120円以上入っているとき' do
+      let(:input) { [100, 100] }
+      its(:buy) { should be == [[120, "Cola"], 80] }
+    end
   end
-
 end
