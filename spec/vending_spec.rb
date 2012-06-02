@@ -57,13 +57,7 @@ describe Vending do
     end
   end
 
-  describe  "在庫を確認するとき" do
-    it "初期状態" do
-      vending = Vending.new
-      vending.stock.should be == [120, "Cola", 5]
-    end
-  end
-
+  
   describe "お金を入れると" do
     it "購入できるジュースのリストが返る" do
       vending = Vending.new
@@ -86,18 +80,20 @@ describe Vending do
   end
 
   describe "投入金額に注目" do
-    subject { Vending.new }
+    before do
+      @vending = Vending.new
+      @change = @vending.enter(input)
+    end
+    subject { @vending }
 
     describe '最初は' do
+      let(:input) { [] }
       its(:show) { should == 0 }
       its(:stock) { should == [120, "Cola", 5] }
       its(:cancel) { should == 0 }
     end
 
     describe "投入金額増えるかな" do
-      before do
-        @change = subject.enter(input)
-      end
       context "だめな硬貨だけのとき" do
         let(:input) { [1,5,2000] }
 	it { @change.should == [1,5,2000] }
@@ -110,28 +106,29 @@ describe Vending do
       end
     end
 
-    it "投入金額が0のとき" do
-      subject.juice_menu.should be == []
+    context "投入金額が0のとき" do
+      let(:input) { [] }
+      its(:juice_menu) { should be == [] }
     end
 
-    it "投入金額が120より少ない時" do
-      subject.enter([10])
-      subject.juice_menu.should be == []
+    context "投入金額が120より少ない時" do
+      let(:input) { [10] }
+      its(:juice_menu) { should be == [] }
     end
 
-    it "投入金額が120" do
-      subject.enter([10, 10, 100])
-      subject.juice_menu.should be == [[120, "Cola"]]
+    context "投入金額が120" do
+      let(:input) { [10, 10, 100] }
+      its(:juice_menu) { should be == [[120, "Cola"]] }
     end
 
-    it "投入金額が120より多い" do
-      subject.enter([10, 100, 100])
-      subject.juice_menu.should be == [[120, "Cola"]]
+    context "投入金額が120より多い" do
+      let(:input) { [10, 100, 100] }
+      its(:juice_menu) { should be == [[120, "Cola"]] }
     end
 
-    it "投入金額が0より多く払い戻すとき" do
-      subject.enter([10, 100])
-      subject.cancel.should be == 110
+    context "投入金額が0より多く払い戻すとき" do
+      let(:input) { [10, 100] }
+      its(:cancel) { should be == 110 }
     end
   end
 
